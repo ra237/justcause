@@ -5,6 +5,8 @@ from .meta.tlearner import TLearner  # noqa: F401
 from .ate.double_robust import DoubleRobustEstimator  # noqa: F401
 from .ate.propensity_weighting import PSWEstimator  # noqa: F401
 
+from .nn.dragonnet import DragonNet
+
 ___all__ = [
     "SLearner",
     "WeightedSLearner",
@@ -12,4 +14,5 @@ ___all__ = [
     "WeightedTLearner",
     "DoubleRobustEstimator",
     "PSWEstimator",
+    "DragonNet",
 ]
