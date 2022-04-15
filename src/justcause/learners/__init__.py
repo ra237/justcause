@@ -8,6 +8,9 @@ from .ate.propensity_weighting import PSWEstimator  # noqa: F401
 
 from .nn.dragonnet import DragonNet
 
+from .tree.causal_forest import CausalForest
+from .tree.random_forest import RandomForest
+
 ___all__ = [
     "SLearner",
     "WeightedSLearner",
@@ -17,4 +20,6 @@ ___all__ = [
     "PSWEstimator",
     "DragonNet",
     "PolyLearner",
+    "CausalForest",
+    "RandomForest"
 ]

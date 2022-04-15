@@ -1,6 +1,6 @@
 from numpy.random import RandomState
 
-MAX_INT = 2 ** 32 - 1
+MAX_INT = 2 ** 16 - 1
 
 
 def int_from_random_state(random_state: RandomState):
