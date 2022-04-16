@@ -10,12 +10,13 @@ class RandomForest:
 
     def __init__(
         self, num_trees: int = 200, random_state: RandomState = None,
-        max_features="sqrt", **kwargs
+        max_features="sqrt", n_jobs=-1, **kwargs
     ):
         self.random_state = check_random_state(random_state)
 
         self.forest = RandomForestRegressor(n_estimators=num_trees,
-        random_state=self.random_state, max_features=max_features , **kwargs)
+        random_state=self.random_state, max_features=max_features ,
+        n_jobs=n_jobs, **kwargs)
         
         self.num_trees = num_trees
         self.kwargs = kwargs
@@ -55,4 +56,4 @@ class RandomForest:
     def fit(self, x: np.array, t: np.array, y: np.array) -> None:
         """ Fits the forest using factual data"""
 
-        self.forest.fit(x, y, t)
+        self.forest.fit(x, y)
