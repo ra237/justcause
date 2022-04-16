@@ -4,9 +4,9 @@ import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-import keras.backend as K
+import tensorflow.keras.backend as K
 from tensorflow.keras.optimizers import SGD, Adam
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau, TerminateOnNaN
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, TerminateOnNaN
 from .models import *
 
 def _split_output(yt_hat, t, y, y_scaler, x, index):

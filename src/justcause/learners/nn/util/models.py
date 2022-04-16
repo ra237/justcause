@@ -1,10 +1,10 @@
 import tensorflow as tf
-import keras.backend as K
+import tensorflow.keras.backend as K
 from tensorflow.keras.layers import Layer
-from keras.metrics import binary_accuracy
-from keras.layers import Input, Dense, Concatenate
-from keras.models import Model
-from keras import regularizers
+from tensorflow.keras.metrics import binary_accuracy
+from tensorflow.keras.layers import Input, Dense, Concatenate
+from tensorflow.keras.models import Model
+from tensorflow.keras import regularizers
 
 def binary_classification_loss(concat_true, concat_pred):
     t_true = concat_true[:, 1]
