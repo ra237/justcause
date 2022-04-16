@@ -30,6 +30,18 @@ def _exponential_effect(covariates):
     return np.exp(1 + expit(covariates[:, 0]))
 
 
+def _polynomial_effect(covariates, random_state):
+    return random_state.normal(2*covariates["x_8"]*covariates["x_7"] + covariates["x_8"]*covariates["x_9"] + 3*covariates["x_7"]*covariates["x_9"], 0, size = len(covariates))
+
+
+def _linear_effect(covariates, random_state):
+    return np.sum(covariates[:])
+
+
+def _sinusoidal_effect(covariates, random_state):
+    return np.sin(covariates[:, 0])
+
+
 def _multi_outcome(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
     y_0 = random_state.normal(0, 0.2, size=len(covariates))
@@ -46,9 +58,88 @@ def _expo_outcome(covariates, *, random_state: RandomState, **kwargs):
     return mu_0, mu_1, y_0, y_1
 
 
+def _polynomial_outcome(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    y_0 = random_state.normal(0, 0.2, size=len(covariates))
+    y_1 = y_0 + _polynomial_effect(covariates)
+    mu_0, mu_1 = y_0, y_1
+    return mu_0, mu_1, y_0, y_1
+
+
+def _linear_outcome(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    y_0 = random_state.normal(0, 0.2, size=len(covariates))
+    y_1 = y_0 + _linear_effect(covariates, random_state)
+    mu_0, mu_1 = y_0, y_1
+    return mu_0, mu_1, y_0, y_1
+
+
+def _sinusoidal_outcome(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    y_0 = random_state.normal(0, 0.2, size=len(covariates))
+    y_1 = y_0 + _sinusoidal_effect(covariates, random_state)
+    mu_0, mu_1 = y_0, y_1
+    return mu_0, mu_1, y_0, y_1
+
+
 def _treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
     return random_state.binomial(1, p=expit(covariates[:, 0]))
+
+
+def _rct_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    return random_state.binomial(1, 0.5)
+
+
+def _single_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    return random_state.binomial(1, p=expit(covariates[:, 0]))
+
+
+def _multi_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    return random_state.binomial(1, p=expit(covariates[:, 0]))
+
+
+def dgp_on_ihdp(
+    setting: str = "multi-modal",
+    treatment_assignment_setting = "rct",
+    n_samples: int = None,
+    n_replications: int = 1,
+    random_state: OptRandState = None,
+) -> List[Frame]:
+
+    covariates = get_ihdp_covariates().values
+
+    if setting == "multi-modal":
+        outcome = _multi_outcome
+    elif setting == "linear":
+        outcome = _linear_outcome
+    elif setting == "sinusoidal":
+        outcome = _sinusoidal_outcome
+    elif setting == "polynomial":
+        outcome = _polynomial_outcome
+    else:
+        outcome = _expo_outcome
+    
+    if treatment_assignment_setting == "rct":
+        treatment_assignment = _rct_treatment_assignment
+    elif treatment_assignment_setting == "single_confounder":
+        treatment_assignment = _single_confounder_treatment_assignment
+    elif treatment_assignment_setting == "multi_confounder":
+        treatment_assignment = _multi_confounder_treatment_assignment
+    else:
+        treatment_assignment = _treatment_assignment
+
+    return generate_data(
+        covariates,
+        treatment_assignment,
+        outcome,
+        n_samples=n_samples,
+        n_replications=n_replications,
+        random_state=random_state,
+    )
 
 
 def multi_expo_on_ihdp(
