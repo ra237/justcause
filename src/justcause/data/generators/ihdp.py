@@ -89,7 +89,7 @@ def _treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
 
 def _rct_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
-    return random_state.binomial(1, 0.5)
+    return random_state.binomial(1, 0.5, size = len(covariates))
 
 
 def _single_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
