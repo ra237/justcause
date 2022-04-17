@@ -33,8 +33,8 @@ def _exponential_effect(covariates):
 
 def _polynomial_effect(covariates, random_state):
     return random_state.normal(
-        2*(covariates["x_0"]**3) + 0.69*(covariates["x_1"]**2) + 1.337*covariates["x_2"] + covariates["x_3"] + 
-        covariates["x_4"]**2 + covariates["x_5"]**3 + 0.5*covariates["x_13"] - 1.5*covariates["x_17"], 
+        2*(covariates[:, 0]**3) + 0.69*(covariates[:, 1]**2) + 1.337*covariates[:, 2] + covariates[:, 3] + 
+        covariates[:, 4]**2 + covariates[:, 5]**3 + 0.5*covariates[:, 13] - 1.5*covariates[:, 17], 
         0, 
         size = len(covariates)
     )
@@ -45,11 +45,11 @@ def _linear_effect(covariates, random_state):
 
 
 def _sinusoidal_effect(covariates, random_state):
-    return random_state.normal(np.sin(2 * math.pi * covariates["x_5"]),0)
+    return random_state.normal(np.sin(2 * math.pi * covariates[:, 5]),0)
 
 
 def _mixed_effect(covariates, random_state):
-    return random_state.normal(np.exp(2*covariates["x_3"]) * np.log(covariates["x_13"]) + (1/(abs(covariates["x_4"])+0.1))**(np.sin(covariates["x_5"])))
+    return random_state.normal(np.exp(2*covariates[:, 3]) * np.log(covariates[:, 13]) + (1/(abs(covariates[:, 4])+0.1))**(np.sin(covariates[:, 5])))
 
 
 def _multi_outcome(covariates, *, random_state: RandomState, **kwargs):
