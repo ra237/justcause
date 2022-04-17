@@ -109,14 +109,14 @@ def _rct_treatment_assignment(covariates, *, random_state: RandomState, **kwargs
     return random_state.binomial(1, 0.5, size = len(covariates))
 
 
-def _single_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
+def _single_binary_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
-    return random_state.binomial(1, p=expit(covariates[:, 0]))
+    return random_state.binomial(1, p=covariates[:, 16])
 
 
 def _multi_confounder_treatment_assignment(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
-    return random_state.binomial(1, p=expit(covariates[:, 0]))
+    return random_state.binomial(1, p=expit((covariates[:, 0] + covariates[:, 1])/2))
 
 
 def dgp_on_ihdp(
@@ -144,8 +144,8 @@ def dgp_on_ihdp(
     
     if treatment_assignment_setting == "rct":
         treatment_assignment = _rct_treatment_assignment
-    elif treatment_assignment_setting == "single_confounder":
-        treatment_assignment = _single_confounder_treatment_assignment
+    elif treatment_assignment_setting == "single_binary_confounder":
+        treatment_assignment = _single_binary_confounder_treatment_assignment
     elif treatment_assignment_setting == "multi_confounder":
         treatment_assignment = _multi_confounder_treatment_assignment
     else:
