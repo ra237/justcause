@@ -11,6 +11,7 @@ Basic Usage: ::
 from typing import List, Optional, Union
 
 import numpy as np
+import math
 from numpy.random import RandomState
 from scipy.special import expit
 from sklearn.utils import check_random_state
@@ -31,7 +32,12 @@ def _exponential_effect(covariates):
 
 
 def _polynomial_effect(covariates, random_state):
-    return random_state.normal(2*covariates["x_8"]*covariates["x_7"] + covariates["x_8"]*covariates["x_9"] + 3*covariates["x_7"]*covariates["x_9"], 0, size = len(covariates))
+    return random_state.normal(
+        2*(covariates["x_0"]**3) + 0.69*(covariates["x_1"]**2) + 1.337*covariates["x_2"] + covariates["x_3"] + 
+        covariates["x_4"]**2 + covariates["x_5"]**3 + 0.5*covariates["x_13"] - 1.5*covariates["x_17"], 
+        0, 
+        size = len(covariates)
+    )
 
 
 def _linear_effect(covariates, random_state):
@@ -39,7 +45,11 @@ def _linear_effect(covariates, random_state):
 
 
 def _sinusoidal_effect(covariates, random_state):
-    return np.sin(covariates[:, 0])
+    return random_state.normal(np.sin(2 * math.pi * covariates["x_5"]),0)
+
+
+def _mixed_effect(covariates, random_state):
+    return random_state.normal(np.exp(2*covariates["x_3"]) * np.log(covariates["x_13"]) + (1/(abs(covariates["x_4"])+0.1))**(np.sin(covariates["x_5"])))
 
 
 def _multi_outcome(covariates, *, random_state: RandomState, **kwargs):
@@ -78,6 +88,13 @@ def _sinusoidal_outcome(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
     y_0 = random_state.normal(0, 0.2, size=len(covariates))
     y_1 = y_0 + _sinusoidal_effect(covariates, random_state)
+    mu_0, mu_1 = y_0, y_1
+    return mu_0, mu_1, y_0, y_1
+
+def _mixed_outcome(covariates, *, random_state: RandomState, **kwargs):
+    random_state = check_random_state(random_state)
+    y_0 = random_state.normal(0, 0.2, size=len(covariates))
+    y_1 = y_0 + _mixed_effect(covariates, random_state)
     mu_0, mu_1 = y_0, y_1
     return mu_0, mu_1, y_0, y_1
 
@@ -120,6 +137,8 @@ def dgp_on_ihdp(
         outcome = _sinusoidal_outcome
     elif setting == "polynomial":
         outcome = _polynomial_outcome
+    elif setting == "mixed":
+        outcome = _mixed_outcome
     else:
         outcome = _expo_outcome
     
