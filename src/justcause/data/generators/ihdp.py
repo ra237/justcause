@@ -133,23 +133,27 @@ def dgp_on_ihdp(
         outcome = _multi_outcome
     elif setting == "linear":
         outcome = _linear_outcome
-    elif setting == "sinusoidal":
+    elif setting == "sinus":
         outcome = _sinusoidal_outcome
-    elif setting == "polynomial":
+    elif setting == "poly":
         outcome = _polynomial_outcome
     elif setting == "mixed":
         outcome = _mixed_outcome
-    else:
+    elif setting == "expo":
         outcome = _expo_outcome
-    
+    else:
+        raise Exception("Illegal setting. Legal settings: multi-modal (default), linear, sinus, poly, mixed, expo")
+
     if treatment_assignment_setting == "rct":
         treatment_assignment = _rct_treatment_assignment
     elif treatment_assignment_setting == "single_binary_confounder":
         treatment_assignment = _single_binary_confounder_treatment_assignment
     elif treatment_assignment_setting == "multi_confounder":
         treatment_assignment = _multi_confounder_treatment_assignment
-    else:
+    elif treatment_assignment_setting == "single_continuous_confounder":
         treatment_assignment = _treatment_assignment
+    else:
+        raise Exception("Illegal treatment_assignment_setting. Legal treatment_assignment_settings: rct (default), single_binary_confounder, multi_confounder, single_continuous_confounder")
 
     return generate_data(
         covariates,
