@@ -71,7 +71,7 @@ def _expo_outcome(covariates, *, random_state: RandomState, **kwargs):
 def _polynomial_outcome(covariates, *, random_state: RandomState, **kwargs):
     random_state = check_random_state(random_state)
     y_0 = random_state.normal(0, 0.2, size=len(covariates))
-    y_1 = y_0 + _polynomial_effect(covariates)
+    y_1 = y_0 + _polynomial_effect(covariates, random_state)
     mu_0, mu_1 = y_0, y_1
     return mu_0, mu_1, y_0, y_1
 
